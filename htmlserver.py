@@ -16,7 +16,7 @@ addr        = ""
 port        = 3000
 backlog     = 5
 message     = "<h1>Hello there, how are you?</h1>"
-mime        = "Content-type:text/html\n\n"
+mime        = "Content-Type:text/html\n\n"
 
 server      = socket(AF_INET, SOCK_STREAM)
 server.bind((addr, port))
