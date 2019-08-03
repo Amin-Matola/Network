@@ -15,14 +15,13 @@ import threading
 addr        = ""
 port        = 3000
 backlog     = 5
-message     = "<h1>Hello there, how are you?</h1>"
+htmlmessage = open(r"path/to/htmlfile.html","r+").read()
 mime        = "Content-Type:text/html\n\n"
 
 server      = socket(AF_INET, SOCK_STREAM)
 server.bind((addr, port))
 
-# Lets define function to handle the upcoming connections one-one
-
+#----------- Lets define function to handle the upcoming connections one-by-one-----
 def handle_connection(source):
     source.sendall(mime)
     source.sendall(message)
@@ -30,15 +29,15 @@ def handle_connection(source):
     
       
 
-# Now listen to the following backlog/amount of pending connections
-
+#--------- Now listen to the following backlog/amount of pending connections--------
 server.listen(backlog)
 
-# initiate infinite loop to serve forever
-
+#----------------- initialize infinite loop to serve forever -------------------------
 while 1:
       # Now lets try accept one connection
       sock,addr   = server.accept()
+      print("Received connection from ",addr)
+        
       threading.Thread(target=handle_connection,args=(sock))
     
 
