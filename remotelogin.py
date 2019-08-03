@@ -21,7 +21,7 @@ class Pylog:
         self.browser= webdriver.Firefox('/path/to/firefoxdriver.exe')     # or null for automatic search
         self.get_source()                                                 # lets now work with the source code
         
-    # We will be using our above firefox webdriver for this code
+    # ------------------- We will be using our above firefox webdriver for this code -------------------------------
     
     def get_source(self):
         if len(self.url):                                                 # check if  user entered location website
@@ -42,13 +42,15 @@ class Pylog:
            time.sleep(0.5)
            self.log_butn = self.browser.find_element_by_xpath("//[@type='submit']")   # getting submit input field...   
            self.login()                                                               # lets now call the actual login
-           
+    
+    
+    #----------------------------- The actual login method -----------------
     def login(self):
              try:
                 self.log_btn.click()
              except Exception as e:
                 return 'Sign In Unsuccessful!\n\n%s'%e
-             return "You are signed in now, %s! All the best."%self.user
+             return f"You are signed in now, {self.user}! All the best."
                 
              
             
