@@ -22,7 +22,7 @@ class Scanner:
     
     """Network programming class, much from old socket API"""
     
-    def __init__( self, what = "ip", where = "https://codenug.com" ):
+    def __init__( self, what = "ip", where = "https://example.com" ):
         self.area       = what
         self.location   = where
         self.ip         = "127.0.0.1"
