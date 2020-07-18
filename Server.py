@@ -8,37 +8,46 @@
 
 #------------------------ Last Touched By : Amin Matola -----------------------------
 
-import socket as soc
+
 from socket import *
 import threading
 
-addr        = ""
-port        = 3000
-backlog     = 5
-htmlmessage = open(r"path/to/htmlfile.html","r+").read()
-mime        = "Content-Type:text/html\n\n"
-
-server      = socket(AF_INET, SOCK_STREAM)
-server.bind((addr, port))
-
-#----------- Lets define function to handle the upcoming connections one-by-one-----
-def handle_connection(source):
-    source.sendall(mime)
-    source.sendall(message)
-    source.close()
-    
-      
-
-#--------- Now listen to the following backlog/amount of pending connections--------
-server.listen(backlog)
-
-#----------------- initialize infinite loop to serve forever -------------------------
-while 1:
-      # Now lets try accept one connection
-      sock,addr   = server.accept()
-      print("Received connection from ",addr)
+class Server:
+    def __init__( self, port = 3000, backlog = 5, flag = True ):
+        self.address        = ""
+        self.__port         = port
+        self.backlog        = backlog
+        self.htmlmessage    = open(r"path/to/htmlfile.html","r+").read()
+        self.mime           = "Content-Type:text/html\n\n"
+        self.flag           = flag
         
-      threading.Thread(target=handle_connection,args=(sock))
+        self.init_server()
+        
+    def start_server( self ):
+        self.__server      = socket( AF_INET, SOCK_STREAM )
+        self.__server.bind( (addr, port) )
+        
+        #----- Now listen to the following backlog/amount of pending connections--------
+        self.__server.listen( backlog )
+        
+        while self.flag:
+              # Now lets try accept one connection
+              sock, addr   = server.accept()
+              print("Received connection from ",addr)
+                
+              threading.Thread( target=handle_connection, args = (sock) )
+            
+    def stop_server( self ):
+        self.flag = False
+
+    #----------- Lets define function to handle the upcoming connections one-by-one-----
+    def handle_connection( self, source ):
+        source.sendall( mime )
+        source.sendall( message )
+        source.close()
+
+        
+      
     
 
 
