@@ -32,7 +32,7 @@ class Server:
         
         while self.flag:
               # Now lets try accept one connection
-              sock, addr   = server.accept()
+              sock, addr   = self.__server.accept()
               print("Received connection from ",addr)
                 
               threading.Thread( target=handle_connection, args = (sock) )
