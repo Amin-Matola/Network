@@ -1,4 +1,5 @@
-#---------------------------Log in on any site with python: selenium ----------------------------
+##################################################################################################
+# Log in on any site with python: selenium
 # 1: enter the location url to your site
 # 2: enter the name of target thing to be scraped
 # 3: enter the css_selector to select the target
@@ -14,7 +15,7 @@ import time
 class Pylog:
     """ Module for signing in to website using python """
     
-    def __init__(self,url,username,password):
+    def __init__(self, url, username, password):
         self.url    = url
         self.user   = username
         self.passwd = password
