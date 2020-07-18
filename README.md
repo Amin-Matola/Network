@@ -6,7 +6,8 @@ The Python Network capabilities...
 ## Warning
 
 None of the materials contained here are intended for malicious purposes.
-The owner will posses no liability for any mischief that may come thereof...
+They are intended for knowledge purposes.
+The owner, however, posses no liability for any mischief that may come thereof...
 
 
 
