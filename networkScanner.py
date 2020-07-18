@@ -18,7 +18,7 @@ import re, time
 #---------------------------------------- Let's start the game ------------------
 
 
-class Network:
+class Scanner:
     
     """Network programming class, much from old socket API"""
     
