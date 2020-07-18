@@ -1,98 +1,148 @@
-#--------------------------------------Urls And IP Scanning Module ----------------------------
-#--------------------------------------Last Touched By: Amin Matola----------------------------
-#--------------------------------------Last Touched On: 03/08/2019 ----------------------------
+################################################################################
+# 1. Urls And IP Scanning Module 
+# -------------------------------------------------------------------------------
+#  Last Touched By: Amin Matola                                                 -
+#  Last Touched On: 03/08/2019                                                  -
+#--------------------------------------------------------------------------------
+from socket import (
+                    socket, 
+                    gethostbyname, 
+                    getfqdn, 
+                    getservbyport, 
+                    inet_aton,
+                    AF_INET,
+                    SOCK_STREAM
+                    )
+import re, time
 
-#----------------------------------------------------------------------------------------------
-from flask import Flask, render_template,request,send_file
-import urllib3 as urllib
-import socket
-from socket import *
-from bs4 import BeautifulSoup
-import requests
-import time
-
-#---------------------------------------- Let's start the game --------------------------------
-app             = Flask(__name__)
-app.secret_key  = "Non-seen"
+#---------------------------------------- Let's start the game ------------------
 
 
-def scan():
-    if request.method=='GET':
-        try:
-            return render_template("scaner.html")
-        except Exception as e:
-            return "Error <hr>%s "%e
-    area        = request.form['area']
-    ip          = request.form['url']
-    ports       = []
-    f_ports     = [21,22,23,25,27,50,53,69,70,80,87, 88,109,110,113,143,1080,8080,8088]
-    hosts       = []
+class Network:
     
-    #------------------ No longer in use -----------------------------------
-        # if ip[:4]   == 'http':
-        #     parts   = ip.split('/')
-        #     ip='www.%s'%parts[2]
-    #-----------------------------------------------------------------------
+    """Network programming class, much from old socket API"""
+    
+    def __init__( self, what = "ip", where = "https://codenug.com" ):
+        self.area       = what
+        self.location   = where
+        self.ip         = "127.0.0.1"
+        self.name       = ""
+        self._proto     = re.compile("https?://")
+        self.__ports    = self.get_ports()
 
-    if ip[0].isdigit():
-        addr    = 'ip'
-    else:
-        addr    = 'url'
-    if area.lower()=='ip':
-        if addr=='url':
-            try:
-                adr     = socket.gethostbyname(ip)
-            except Exception as e:
-                return render_template('scaner.html',error=True)
-            return render_template('scaner.html', addr=addr,loc=ip,res=adr)
-        else:
-            try:
-                adr     = socket.getfqdn(ip)
-            except Exception as e:
-                return render_template('scaner.html',error=True)
-            return render_template('scaner.html', addr=addr,loc=ip,res=adr)
+        # Set the name of area to search (IP/URL)
+        self.set_area()
+    
+        
+    def get_ports( self ):
+        """ Returns the ports/services to scan for """
+        
+        return    [21,
+                   22,
+                   23,
+                   25,
+                   27,
+                   50,
+                   53,
+                   69,
+                   70,
+                   80,
+                   87, 
+                   88,
+                   109,
+                   110,
+                   113,
+                   143,
+                   1080,
+                   8080,
+                   8088]
 
-    elif area.lower()   =='name':
+    def is_ip( self, ip ):
+        """Detect if the given string is a valid ip"""
         try:
-                adr     = socket.getfqdn(ip)
-        except Exception as e:
-                return render_template('scaner.html',error=True)
-        return render_template('scaner.html', addr=addr,loc=ip,res=adr)
+            inet_aton(ip)
+        except:
+            return False
+        
+        return True
+        
+    def detect_what( self ):
+        """Return what to detect, protocols, services etc"""
+        return self.area.lower()
+        
+    def protocol( self ):
+        """ Detect the protocol used, if string passed is an IP address"""
+        try:
+            return self._proto.search( self.location ).group()
+        except:
+            return ""
 
-    elif area.lower()   == 'ports':
-        s               = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-        for port in f_ports:
-            tes         = s.connect_ex((ip,port))
-            if int(tes) == 0:
-                hosts.append(port)
-            time.sleep(0.001)
-        if len(hosts)   <=  0:
-            hosts       =  [0]
-        return render_template('scaner.html',hosts = hosts)
 
-    elif area.lower()   ==  'services':
-        servs           = {}
-        s               = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        for port in f_ports:
+    def set_area( self, to = "url" ):
+        """ Set the area to detect, to IP or URL based on given location"""
+        if not self.is_ip( self.location ):
+            self.area = to
+
+    def get_valid_url( self, url = "" ):
+        """Passing http to socket may render errors, so remove protocol"""
+        if not len(url):
+            url = self.location
+        try:
+            return url.strip(self.protocol())
+        except:
+            return url
+
+    def get_url( self, url = ""):
+        if not len(url):
+            url = self.location
+        if not len(url):
+            return getfqdn(self.get_machine_ip())
+        return url
+
+    def get_ip( self, url = ""):
+        """Get the IP address of the given url"""
+        url = self.get_url(url)
+
+        if not self.is_ip( url ):
             try:
-                tes         = s.connect_ex((ip,port))
+                return gethostbyname( self.get_valid_url( url ) )
             except Exception as e:
-                return "An error Occured:<hr>%s"%e
-            try:
-                serv        = socket.getservbyport(port)
-            except:
-                pass
+                return False
 
-            if int(tes)     ==  0:
-                if not port in servs:
-                    servs[port] = [serv,"running"]
-            else:
-                if not port in servs:
-                    servs[port] = [serv,"not running"]
+        else:
+            return url
 
-        return render_template('scaner.html',services=servs)
+    def get_machine_ip( self ):
+        """Get host ip where this file is running"""
+        return gethostbyname(gethostname())
 
+    def get_machine_name( self ):
+        """Get host name where this file is running"""
+        return gethostname()
 
+    def get_domain_name( self, ip = ""):
+        url = self.get_ip(ip)
 
+        if self.is_ip(url):
+            return getfqdn(url)
 
-    return render_template('scaner.html',error=True)
+    def get_open_ports( self, url = "" ):
+        ports, o_ports, ip = self.get_ports(), [], self.get_ip(url)
+
+        sock_obj           = socket(AF_INET, SOCK_STREAM)
+        for port in ports:
+            flag           = sock_obj.connect_ex( ( ip, port ) )
+
+            if int( flag ) == 0:
+                o_ports.append( port )
+
+            time.sleep(0.001)
+        
+        return o_ports
+
+    def get_running_services( self, url = ""):
+        ports, names = self.get_open_ports(url), []
+
+        for port in ports:
+            names.append(getservbyport(port))
+        return names
