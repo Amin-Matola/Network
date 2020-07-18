@@ -24,8 +24,8 @@ class Server:
         self.init_server()
         
     def start_server( self ):
-        self.__server      = socket( AF_INET, SOCK_STREAM )
-        self.__server.bind( (addr, port) )
+        self.__server       = socket( AF_INET, SOCK_STREAM )
+        self.__server.bind( (addr, self.__port) )
         
         #----- Now listen to the following backlog/amount of pending connections--------
         self.__server.listen( backlog )
