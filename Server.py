@@ -35,7 +35,7 @@ class Server:
               sock, addr   = self.__server.accept()
               print("Received connection from ",addr)
                 
-              threading.Thread( target=handle_connection, args = (sock) )
+              threading.Thread( target=self.handle_connection, args = (sock) )
             
     def stop_server( self ):
         self.flag = False
