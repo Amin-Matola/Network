@@ -17,37 +17,56 @@ class Server:
         self.address        = ""
         self.__port         = port
         self.backlog        = backlog
-        self.htmlmessage    = open(r"path/to/htmlfile.html","r+").read()
-        self.mime           = "Content-Type:text/html\n\n"
+        self.message        = open(r"path/to/htmlfile.html","r+").read().encode()
+        self.mime           = b"Content-Type:text/html\r\n\n"
         self.flag           = flag
+        self.__clients      = []
         
-        self.init_server()
+        self.start_server()
         
     def start_server( self ):
+        print("Starting server on port %d" % self.__port)
         self.__server       = socket( AF_INET, SOCK_STREAM )
-        self.__server.bind( (addr, self.__port) )
+        self.__server.bind( (self.address, self.__port) )
         
         #----- Now listen to the following backlog/amount of pending connections--------
-        self.__server.listen( backlog )
+        self.__server.listen( self.backlog )
         
         while self.flag:
-              # Now lets try accept one connection
-              sock, addr   = self.__server.accept()
-              print("Received connection from ",addr)
-                
-              threading.Thread( target=self.handle_connection, args = (sock) )
+            # Now lets try accept one connection
+            try:
+                sock, addr        = self.__server.accept()
+                data              = sock.recv(2048).decode()
+        
+
+                if addr[0] not in self.__clients:
+                    self.__clients.append(addr[0])
+                    print("Received connection from ", addr)
+                    if len(data):
+                        print("\n","-"*40, "\nReceived Below Data From Socket Host %s:\n%s\n\t%s"%(addr[0],"-"*40, data))
+                else:
+                    if self.__clients[-1] == addr[0]:
+                        print("\n\t%s"%data)
+                    else:
+                        print("-"*40, "\n%s\n\t%s"%("-"*40, data))
+
+
+                    
+                threading.Thread( target=self.handle_connection, args = (sock,) ).start()
+                #self.handle_connection(sock)
+            except Exception as e:
+                print("Stopping the server")
+                self.stop_server()
             
     def stop_server( self ):
         self.flag = False
 
     #----------- Lets define function to handle the upcoming connections one-by-one-----
-    def handle_connection( self, source ):
-        source.sendall( mime )
-        source.sendall( message )
-        source.close()
-
+    def handle_connection( self, client ):
         
-      
-    
+        client.sendall( self.mime + self.message )
+
+        client.close()
 
 
+Server()
