@@ -1,11 +1,12 @@
-################################################################################
+#################################################################################
 # 1. Urls And IP Scanning Module 
 # -------------------------------------------------------------------------------
 #  Last Touched By: Amin Matola                                                 -
 #  Last Touched On: 03/08/2019                                                  -
 #--------------------------------------------------------------------------------
 from socket import (
-                    socket, 
+                    socket,
+                    gethostname, 
                     gethostbyname, 
                     getfqdn, 
                     getservbyport, 
@@ -29,6 +30,7 @@ class Scanner:
         self.name       = ""
         self._proto     = re.compile("https?://")
         self.__ports    = self.get_ports()
+        self.__client   = socket()
 
         # Set the name of area to search (IP/URL)
         self.set_area()
@@ -146,3 +148,33 @@ class Scanner:
         for port in ports:
             names.append(getservbyport(port))
         return names
+
+    def reconnect(self):
+        self.__client = socket()
+        self.__client.connect((self.ip, self.__ports))
+
+    def send_data(self, host = "", port = "", data = ""):
+        if not len(host):
+            self.ip = host
+        if port != "":
+            self.__ports = port
+
+        try:
+                self.__client.connect((self.ip, self.__ports))
+        except OSError:
+            self.reconnect()
+        
+        self.__client.send(data.encode())
+        while True:
+                try:
+                    results = self.read_results()
+                    if results != b"" or results != "":
+                        print(results)
+                    else:
+                        break
+                except:
+                    break
+                    
+
+    def read_results(self, buffer = 2048):
+            return self.__client.recv(buffer).decode()
