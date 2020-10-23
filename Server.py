@@ -1,18 +1,24 @@
-#----------------------- Working with the crude sockets ----------------------------
+##################################################################
+# Working with the crude sockets
+#-----------------------------------------------------------------
 # 1. Create socket for TCP/IP streaming server
 # 2. Assign address
 # 3. Listen to the connections
 # 4. Accept connections
 # 5. Process connections and data
 # 6. Returning the response
+#-----------------------------------------------------------------
+# Last Touched By : Amin Matola
+# Last Touched    : 10/23/2020
+#-----------------------------------------------------------------
 
-#------------------------ Last Touched By : Amin Matola -----------------------------
-
-
-from socket import *
 import threading
+from socket import *
 
 class Server:
+    
+    """Socket Server for local testing network parameters/entities"""
+    
     def __init__( self, port = 3000, backlog = 5, flag = True ):
         self.address        = ""
         self.__port         = port
@@ -68,5 +74,5 @@ class Server:
 
         client.close()
 
-
-Server()
+if __name__ == "__main__":
+    Server()
