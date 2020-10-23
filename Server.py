@@ -31,11 +31,13 @@ class Server:
         self.start_server()
         
     def start_server( self ):
+        """ Main function to start listening on this server"""
+        
         print("Starting server on port %d" % self.__port)
         self.__server       = socket( AF_INET, SOCK_STREAM )
         self.__server.bind( (self.address, self.__port) )
         
-        #----- Now listen to the following backlog/amount of pending connections--------
+        # Now listen to the following backlog/amount of pending connections
         self.__server.listen( self.backlog )
         
         while self.flag:
@@ -59,16 +61,19 @@ class Server:
 
                     
                 threading.Thread( target=self.handle_connection, args = (sock,) ).start()
-                #self.handle_connection(sock)
+               
             except Exception as e:
                 print("Stopping the server")
                 self.stop_server()
             
     def stop_server( self ):
+        """Stop this instance by setting the flag to false"""
         self.flag = False
 
     #----------- Lets define function to handle the upcoming connections one-by-one-----
     def handle_connection( self, client ):
+        
+        """Handles individual socket client"""
         
         client.sendall( self.mime + self.message )
 
