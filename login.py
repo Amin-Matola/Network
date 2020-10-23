@@ -1,12 +1,13 @@
-##################################################################################################
+###############################################################################
 # Log in on any site with python: selenium
-# 1: enter the location url to your site
+#------------------------------------------------------------------------------
 # 2: enter the name of target thing to be scraped
 # 3: enter the css_selector to select the target
 # 4: get the results
-
-#: Pull off the trigger
-#--------------------------- Last Modified By : Amin Matola -------------------------------------
+#------------------------------------------------------------------------------
+# Last Touched By: Amin Matola           
+# Last Touched On  : 10/23/2020
+#---------------------------  -------------------------------------------------
 
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -35,7 +36,7 @@ class Pylog:
         self.process_source_code()                                        # now the code processor should enter the doc
         
     def process_source_code(self):
-           self.username = self.browser.find_element_by_name('username')   # getting username input field...
+           self.username = self.browser.find_element_by_name('username')  # getting username input field...
            self.username.send_keys(self.user)                             # fill the username field like pressing on keyboard
            time.sleep(0.5)                                                # wait 3 milliseconds
            self.password = self.browser.find_element_by_name('password')  # getting password input field...
