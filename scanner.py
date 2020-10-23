@@ -26,10 +26,10 @@ class Scanner:
     def __init__( self, what = "ip", where = "https://example.com" ):
         self.area       = what
         self.location   = where
-        self.ip         = "127.0.0.1"
         self.name       = ""
         self._proto     = re.compile("https?://")
         self.__ports    = self.get_ports()
+        self.ip         = self.get_ip(where)
         self.__client   = socket()
 
         # Set the name of area to search (IP/URL)
