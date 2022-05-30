@@ -154,7 +154,7 @@ class Scanner:
         self.__client.connect((self.ip, self.__ports))
 
     def send_data(self, host = "", port = "", data = ""):
-        if not len(host):
+        if len(host):
             self.ip = host
         if port != "":
             self.__ports = port
