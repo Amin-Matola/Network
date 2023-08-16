@@ -1,6 +1,9 @@
 # Network
 The Python Network capabilities...
 
+There are two critical files here, the Server, a socket server... and scanner, the client.
+Use the Server for serving the user requests, and use scanner.py for client operations.
+
 ----------------------------------------------------------------------------
 
 ## Warning
