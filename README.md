@@ -14,4 +14,4 @@ The owner, however, possess no liability for any mischief that may come thereof.
 
 
 
- **Amin Matola**  (The _Pythonist_ :snake:)
+ **Amin Matola**  (The _Pythonista_ :snake:)
